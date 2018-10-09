@@ -1,12 +1,14 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { FormsModule } from '@angular/forms'
+import { RouterModule, Routes } from '@angular/router'
+import { HttpModule } from '@angular/http'
 import { AppComponent } from './app.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { UsersComponent } from './users/users.component';
 import { AddTasksComponent } from './add-tasks/add-tasks.component';
 import { ViewTasksComponent } from './view-tasks/view-tasks.component';
-import { AppRoutingModule } from './app-routing.module';
+import { appRoutes } from './app-routing.module';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { AppRoutingModule } from './app-routing.module';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    FormsModule,
+    HttpModule,
+    RouterModule.forRoot(appRoutes)
   ],
   providers: [],
   bootstrap: [AppComponent]

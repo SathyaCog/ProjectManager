@@ -1,7 +1,4 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AppComponent } from './app.component';
-
+import { Routes } from '@angular/router';
 import { AddTasksComponent } from './add-tasks/add-tasks.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { UsersComponent } from './users/users.component';
@@ -14,8 +11,3 @@ export const appRoutes: Routes = [
   { path: 'users', component: UsersComponent },
   { path: 'viewTasks', component: ViewTasksComponent }
 ]
-
-@NgModule({
-  imports: [RouterModule.forRoot(appRoutes)]
-})
-export class AppRoutingModule { }
