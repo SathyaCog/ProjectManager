@@ -1,6 +1,7 @@
 ﻿using ProjectManager.DataAccessLayer;
 using ProjectManager.InterfaceLayer;
 using System.Collections.ObjectModel;
+using System.Data.Entity;
 using System.Linq;
 
 namespace ProjectManager.BusinessLayer
@@ -33,9 +34,8 @@ namespace ProjectManager.BusinessLayer
 
             return userCollection;
         }
-        public int AddUser(CommonEntities.Users user)
+        public void AddUser(CommonEntities.Users user)
         {
-            int result = -1;
             Users ur = new Users
             {
                 UserID = user.UserID,
@@ -45,9 +45,7 @@ namespace ProjectManager.BusinessLayer
             };
 
             _projectManager.Users.Add(ur);
-            result = _projectManager.SaveChanges();
-
-            return result;
+            _projectManager.SaveChanges();
         }
         public CommonEntities.Users GetUserById(int userId)
         {
@@ -64,9 +62,8 @@ namespace ProjectManager.BusinessLayer
 
             return user;
         }
-        public int UpdateUser(CommonEntities.Users user)
+        public void UpdateUser(CommonEntities.Users user)
         {
-            int result = -1;
             var ur = _projectManager.Users.Where(x => x.UserID == user.UserID).FirstOrDefault();
             if (ur != null)
             {
@@ -74,10 +71,18 @@ namespace ProjectManager.BusinessLayer
                 ur.FirstName = user.FirstName;
                 ur.LastName = user.LastName;
                 ur.EmployeeID = user.EmployeeID;
-                result = _projectManager.SaveChanges();
+                _projectManager.SaveChanges();
             }
+        }
 
-            return result;
+        public void DeleteUser(CommonEntities.Users user)
+        {
+            Users ur = new Users
+            {
+                UserID = user.UserID
+            };
+            _projectManager.Entry(ur).State = EntityState.Deleted;
+            _projectManager.SaveChanges();
         }
     }
 }

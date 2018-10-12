@@ -18,10 +18,9 @@
           </Key>
           <Property Name="ProjectID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Project" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="StartDate" Type="date" Nullable="false" />
-          <Property Name="EndDate" Type="date" Nullable="false" />
+          <Property Name="StartDate" Type="date" />
+          <Property Name="EndDate" Type="date" />
           <Property Name="Priority" Type="int" Nullable="false" />
-          <Property Name="ManagerID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Tasks">
           <Key>
@@ -29,7 +28,7 @@
           </Key>
           <Property Name="TaskID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ParentTaskID" Type="int" />
-          <Property Name="ProjectID" Type="int" Nullable="false" />
+          <Property Name="ProjectID" Type="int" />
           <Property Name="StartDate" Type="date" Nullable="false" />
           <Property Name="EndDate" Type="date" Nullable="false" />
           <Property Name="Priority" Type="int" Nullable="false" />
@@ -43,19 +42,9 @@
           <Property Name="FirstName" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="LastName" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="EmployeeID" Type="varchar" MaxLength="6" Nullable="false" />
+          <Property Name="ProjectID" Type="int" />
+          <Property Name="TaskID" Type="int" />
         </EntityType>
-        <Association Name="FK_Projects_Users">
-          <End Role="Users" Type="Self.Users" Multiplicity="1" />
-          <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="UserID" />
-            </Principal>
-            <Dependent Role="Projects">
-              <PropertyRef Name="ManagerID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Tasks_ParentTasks">
           <End Role="ParentTasks" Type="Self.ParentTasks" Multiplicity="0..1" />
           <End Role="Tasks" Type="Self.Tasks" Multiplicity="*" />
@@ -68,15 +57,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Tasks_Projects">
-          <End Role="Projects" Type="Self.Projects" Multiplicity="1" />
-          <End Role="Tasks" Type="Self.Tasks" Multiplicity="*" />
+        <Association Name="FK_Users_Projects">
+          <End Role="Projects" Type="Self.Projects" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Projects">
               <PropertyRef Name="ProjectID" />
             </Principal>
-            <Dependent Role="Tasks">
+            <Dependent Role="Users">
               <PropertyRef Name="ProjectID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_Tasks">
+          <End Role="Tasks" Type="Self.Tasks" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tasks">
+              <PropertyRef Name="TaskID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="TaskID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -85,17 +86,17 @@
           <EntitySet Name="Projects" EntityType="Self.Projects" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tasks" EntityType="Self.Tasks" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_Projects_Users" Association="Self.FK_Projects_Users">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Projects" EntitySet="Projects" />
-          </AssociationSet>
           <AssociationSet Name="FK_Tasks_ParentTasks" Association="Self.FK_Tasks_ParentTasks">
             <End Role="ParentTasks" EntitySet="ParentTasks" />
             <End Role="Tasks" EntitySet="Tasks" />
           </AssociationSet>
-          <AssociationSet Name="FK_Tasks_Projects" Association="Self.FK_Tasks_Projects">
+          <AssociationSet Name="FK_Users_Projects" Association="Self.FK_Users_Projects">
             <End Role="Projects" EntitySet="Projects" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_Tasks" Association="Self.FK_Users_Tasks">
             <End Role="Tasks" EntitySet="Tasks" />
+            <End Role="Users" EntitySet="Users" />
           </AssociationSet>
         </EntityContainer>
       </Schema>
@@ -117,12 +118,10 @@
           </Key>
           <Property Name="ProjectID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Project" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="StartDate" Type="DateTime" Precision="0" />
+          <Property Name="EndDate" Type="DateTime" Precision="0" />
           <Property Name="Priority" Type="Int32" Nullable="false" />
-          <Property Name="ManagerID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Users" Relationship="Self.FK_Projects_Users" FromRole="Projects" ToRole="Users" />
-          <NavigationProperty Name="Tasks" Relationship="Self.FK_Tasks_Projects" FromRole="Projects" ToRole="Tasks" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_Users_Projects" FromRole="Projects" ToRole="Users" />
         </EntityType>
         <EntityType Name="Tasks">
           <Key>
@@ -130,13 +129,13 @@
           </Key>
           <Property Name="TaskID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ParentTaskID" Type="Int32" />
-          <Property Name="ProjectID" Type="Int32" Nullable="false" />
+          <Property Name="ProjectID" Type="Int32" />
           <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="Priority" Type="Int32" Nullable="false" />
           <Property Name="Status" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="ParentTasks" Relationship="Self.FK_Tasks_ParentTasks" FromRole="Tasks" ToRole="ParentTasks" />
-          <NavigationProperty Name="Projects" Relationship="Self.FK_Tasks_Projects" FromRole="Tasks" ToRole="Projects" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_Users_Tasks" FromRole="Tasks" ToRole="Users" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -146,7 +145,10 @@
           <Property Name="FirstName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="LastName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="EmployeeID" Type="String" MaxLength="6" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Projects" Relationship="Self.FK_Projects_Users" FromRole="Users" ToRole="Projects" />
+          <Property Name="ProjectID" Type="Int32" />
+          <Property Name="TaskID" Type="Int32" />
+          <NavigationProperty Name="Projects" Relationship="Self.FK_Users_Projects" FromRole="Users" ToRole="Projects" />
+          <NavigationProperty Name="Tasks" Relationship="Self.FK_Users_Tasks" FromRole="Users" ToRole="Tasks" />
         </EntityType>
         <Association Name="FK_Tasks_ParentTasks">
           <End Role="ParentTasks" Type="ProjectManagerModel.ParentTasks" Multiplicity="0..1" />
@@ -160,27 +162,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Projects_Users">
-          <End Role="Users" Type="ProjectManagerModel.Users" Multiplicity="1" />
-          <End Role="Projects" Type="ProjectManagerModel.Projects" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="UserID" />
-            </Principal>
-            <Dependent Role="Projects">
-              <PropertyRef Name="ManagerID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Tasks_Projects">
-          <End Role="Projects" Type="ProjectManagerModel.Projects" Multiplicity="1" />
-          <End Role="Tasks" Type="ProjectManagerModel.Tasks" Multiplicity="*" />
+        <Association Name="FK_Users_Projects">
+          <End Role="Projects" Type="ProjectManagerModel.Projects" Multiplicity="0..1" />
+          <End Role="Users" Type="ProjectManagerModel.Users" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Projects">
               <PropertyRef Name="ProjectID" />
             </Principal>
-            <Dependent Role="Tasks">
+            <Dependent Role="Users">
               <PropertyRef Name="ProjectID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_Tasks">
+          <End Role="Tasks" Type="ProjectManagerModel.Tasks" Multiplicity="0..1" />
+          <End Role="Users" Type="ProjectManagerModel.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tasks">
+              <PropertyRef Name="TaskID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="TaskID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -193,13 +195,13 @@
             <End Role="ParentTasks" EntitySet="ParentTasks1" />
             <End Role="Tasks" EntitySet="Tasks1" />
           </AssociationSet>
-          <AssociationSet Name="FK_Projects_Users" Association="Self.FK_Projects_Users">
+          <AssociationSet Name="FK_Users_Projects" Association="Self.FK_Users_Projects">
+            <End Role="Projects" EntitySet="Projects1" />
             <End Role="Users" EntitySet="Users1" />
-            <End Role="Projects" EntitySet="Projects1" />
           </AssociationSet>
-          <AssociationSet Name="FK_Tasks_Projects" Association="Self.FK_Tasks_Projects">
-            <End Role="Projects" EntitySet="Projects1" />
+          <AssociationSet Name="FK_Users_Tasks" Association="Self.FK_Users_Tasks">
             <End Role="Tasks" EntitySet="Tasks1" />
+            <End Role="Users" EntitySet="Users1" />
           </AssociationSet>
         </EntityContainer>
       </Schema>
@@ -224,7 +226,6 @@
                 <ScalarProperty Name="StartDate" ColumnName="StartDate" />
                 <ScalarProperty Name="EndDate" ColumnName="EndDate" />
                 <ScalarProperty Name="Priority" ColumnName="Priority" />
-                <ScalarProperty Name="ManagerID" ColumnName="ManagerID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -248,6 +249,8 @@
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
                 <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
+                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+                <ScalarProperty Name="TaskID" ColumnName="TaskID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

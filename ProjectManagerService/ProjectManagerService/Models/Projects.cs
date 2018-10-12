@@ -10,8 +10,8 @@ namespace ProjectManagerService.Models
     {
         public int ProjectID { get; set; }
         public string Project { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public int Priority { get; set; }
         public int ManagerID { get; set; }
         public string ManagerName { get; set; }

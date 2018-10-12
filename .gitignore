@@ -15,3 +15,5 @@
 /ProjectManagerService/ProjectManager.DataAccessLayer/bin/Debug
 /ProjectManagerService/ProjectManager.InterfaceLayer/obj
 /ProjectManagerService/ProjectManager.InterfaceLayer/bin/Debug
+/ProjectManagerUI/node_modules
+/ProjectManagerUI/.vscode

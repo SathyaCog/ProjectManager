@@ -20,13 +20,11 @@ namespace ProjectManagerService.Tests
 
             return users;
         }
-        public int AddUser(CommonEntities.Users user)
+        public void AddUser(CommonEntities.Users user)
         {
             Mock<ProjectManagerEntities> mockContext = MockDataSetList();
             var userBL = new UserBL(mockContext.Object);
-            int result = userBL.AddUser(user);
-
-            return result;
+            userBL.AddUser(user);
         }
         public CommonEntities.Users GetUserById(int userId)
         {
@@ -36,13 +34,18 @@ namespace ProjectManagerService.Tests
 
             return user;
         }
-        public int UpdateUser(CommonEntities.Users user)
+        public void UpdateUser(CommonEntities.Users user)
         {
             Mock<ProjectManagerEntities> mockContext = MockDataSetList();
             var userBL = new UserBL(mockContext.Object);
-            int result = userBL.UpdateUser(user);
+            userBL.UpdateUser(user);
+        }
 
-            return result;
+        public void DeleteUser(CommonEntities.Users user)
+        {
+            Mock<ProjectManagerEntities> mockContext = MockDataSetList();
+            var userBL = new UserBL(mockContext.Object);
+            userBL.DeleteUser(user);
         }
 
         private static Mock<ProjectManagerEntities> MockDataSetList()

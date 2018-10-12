@@ -53,7 +53,6 @@ namespace ProjectManagerService.Controllers
             {
                 CommonEntities.Projects proj = new CommonEntities.Projects
                 {
-                    ProjectID = project.ProjectID,
                     Project = project.Project,
                     StartDate = project.StartDate,
                     EndDate = project.EndDate,
@@ -61,15 +60,8 @@ namespace ProjectManagerService.Controllers
                     ManagerID = project.ManagerID
                 };
 
-                var result = _projectBL.AddProject(proj);
-                if (result != -1)
-                {
-                    return Ok();
-                }
-                else
-                {
-                    return InternalServerError();
-                }
+                _projectBL.AddProject(proj);
+                return Ok();
             }
             catch (Exception)
             {
@@ -77,30 +69,30 @@ namespace ProjectManagerService.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("GetProjectById/{projId}")]
-        public IHttpActionResult GetProjectById(int projId)
-        {
-            ProjectMangerModel.Projects project = null;
+        //[HttpGet]
+        //[Route("GetProjectById/{projId}")]
+        //public IHttpActionResult GetProjectById(int projId)
+        //{
+        //    ProjectMangerModel.Projects project = null;
 
-            var blProject = _projectBL.GetProjectById(projId);
-            if (blProject == null)
-            {
-                return NotFound();
-            }
-            project = new ProjectMangerModel.Projects
-            {
-                ProjectID = blProject.ProjectID,
-                Project = blProject.Project,
-                StartDate = blProject.StartDate,
-                EndDate = blProject.EndDate,
-                Priority = blProject.Priority,
-                ManagerID = blProject.ManagerID,
-                ManagerName = blProject.ManagerName
-            };
+        //    var blProject = _projectBL.GetProjectById(projId);
+        //    if (blProject == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    project = new ProjectMangerModel.Projects
+        //    {
+        //        ProjectID = blProject.ProjectID,
+        //        Project = blProject.Project,
+        //        StartDate = blProject.StartDate,
+        //        EndDate = blProject.EndDate,
+        //        Priority = blProject.Priority,
+        //        ManagerID = blProject.ManagerID,
+        //        ManagerName = blProject.ManagerName
+        //    };
 
-            return Ok(project);
-        }
+        //    return Ok(project);
+        //}
 
         [HttpPost]
         [Route("UpdateProject")]
@@ -117,15 +109,8 @@ namespace ProjectManagerService.Controllers
                     Priority = project.Priority
                 };
 
-                var result = _projectBL.UpdateProject(proj);
-                if (result != -1)
-                {
-                    return Ok();
-                }
-                else
-                {
-                    return InternalServerError();
-                }
+                _projectBL.UpdateProject(proj);
+                return Ok();
             }
             catch (Exception)
             {

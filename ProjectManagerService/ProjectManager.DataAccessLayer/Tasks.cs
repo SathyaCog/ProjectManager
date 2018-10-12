@@ -14,15 +14,22 @@ namespace ProjectManager.DataAccessLayer
     
     public partial class Tasks
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Tasks()
+        {
+            this.Users = new HashSet<Users>();
+        }
+    
         public int TaskID { get; set; }
         public Nullable<int> ParentTaskID { get; set; }
-        public int ProjectID { get; set; }
+        public Nullable<int> ProjectID { get; set; }
         public System.DateTime StartDate { get; set; }
         public System.DateTime EndDate { get; set; }
         public int Priority { get; set; }
         public bool Status { get; set; }
     
         public virtual ParentTasks ParentTasks { get; set; }
-        public virtual Projects Projects { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Users> Users { get; set; }
     }
 }

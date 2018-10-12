@@ -58,15 +58,8 @@ namespace ProjectManagerService.Controllers
                     EmployeeID = user.EmployeeID
                 };
 
-                var result = _userBL.AddUser(usr);
-                if (result != -1)
-                {
-                    return Ok();
-                }
-                else
-                {
-                    return InternalServerError();
-                }
+                _userBL.AddUser(usr);
+                return Ok();
             }
             catch (Exception)
             {
@@ -110,15 +103,30 @@ namespace ProjectManagerService.Controllers
                     EmployeeID = user.EmployeeID
                 };
 
-                var result = _userBL.UpdateUser(usr);
-                if (result != -1)
+                _userBL.UpdateUser(usr);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+        }
+
+        [HttpPost]
+        [Route("DeleteUser")]
+        public IHttpActionResult DeleteUser([FromBody]ProjectMangerModel.Users user)
+        {
+            try
+            {
+                CommonEntities.Users usr = new CommonEntities.Users
                 {
-                    return Ok();
-                }
-                else
-                {
-                    return InternalServerError();
-                }
+                    UserID = user.UserID,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    EmployeeID = user.EmployeeID
+                };
+                _userBL.DeleteUser(usr);
+                return Ok();
             }
             catch (Exception)
             {

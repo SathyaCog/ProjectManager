@@ -9,6 +9,9 @@ import { UsersComponent } from './users/users.component';
 import { AddTasksComponent } from './add-tasks/add-tasks.component';
 import { ViewTasksComponent } from './view-tasks/view-tasks.component';
 import { appRoutes } from './app-routing.module';
+import { ApiService } from './service/api-service';
+import { BootstrapModalModule } from 'ng2-bootstrap-modal';
+import { UserListModelComponent } from './user-list-model/user-list-model.component';
 
 @NgModule({
   declarations: [
@@ -16,15 +19,21 @@ import { appRoutes } from './app-routing.module';
     ProjectsComponent,
     UsersComponent,
     AddTasksComponent,
-    ViewTasksComponent
+    ViewTasksComponent,
+    UserListModelComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
-    RouterModule.forRoot(appRoutes)
+    BootstrapModalModule,
+    RouterModule.forRoot(appRoutes),
+    BootstrapModalModule.forRoot({ container: document.body })
   ],
-  providers: [],
+  entryComponents: [
+    UserListModelComponent
+  ],
+  providers: [ApiService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
