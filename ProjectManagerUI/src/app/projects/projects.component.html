@@ -2,9 +2,9 @@
   <form #addProjectForm="ngForm">
     <h4 class="BottomMargin">Add Project</h4>
     <div class="form-group">
-      <label for="txtProject">Project:</label>
-      <input type="text" class="form-control" [(ngModel)]="Project" id="txtProject" name="txtProject" required
-        #txtProject="ngModel">
+      <label class="labelClass" for="txtProject">Project:</label>
+      <input type="text" class="form-control textClass" [(ngModel)]="Project" id="txtProject" name="txtProject"
+        required #txtProject="ngModel">
       <div [hidden]="txtProject.valid || txtProject.pristine" class="alertDanger">
         Project is required
       </div>
@@ -18,13 +18,13 @@
         [min]="EndDate" [(ngModel)]="EndDate" required class="form-control">
     </div>
     <div class="form-group">
-      <label for="txtPriority">Priority:</label>
+      <label class="labelClass" for="txtPriority">Priority:</label>
       <input type="range" class="slider" id="txtPriority" name="txtPriority" [(ngModel)]="Priority" required min="0"
         max="30" step="1" #txtPriority="ngModel"> {{Priority}}
     </div>
     <div class="form-group">
-      <label for="txtManager">Manager:</label>
-      <input type="text" class="form-control" [(ngModel)]="ManagerName" disabled id="txtManager" name="txtManager"
+      <label class="labelClass" for="txtManager">Manager:</label>
+      <input type="text" class="form-control textClass" [(ngModel)]="ManagerName" disabled id="txtManager" name="txtManager"
         required #txtManager="ngModel">
       <button id="openModalButton" class="form-control" style="margin-left: 1%; width: 10%;" (click)="openDialog()">Search</button>
       <div [hidden]="txtManager.valid || txtManager.pristine" class="alertDanger">
@@ -40,23 +40,55 @@
   <div>
     <input type="text" class="form-control" (input)="filterItem()" [(ngModel)]="searchText" style="display: inline;"
       placeholder="Search...">
-    <b style="display: inline; margin-left: 2%; width: 10%;">Sort:</b>
-    <button class="form-control overFlow" (click)="sortingUser('FName')" style="display: inline;margin-left: 2%; width: 15%;">First
-      Name</button>
-    <button class="form-control overFlow" (click)="sortingUser('LName')" style="display: inline;margin-left: 2%; width: 15%;">Last
-      Name</button>
-    <button class="form-control overFlow" (click)="sortingUser('EId')" style="display: inline;margin-left: 2%; width: 15%;">Employee
-      Id</button>
+    <div style="margin-top: 2%;">
+      <b style="display: inline; width: 10%;">Sort:</b>
+      <button class="form-control overFlow" (click)="sortingUser('FName')" style="display: inline;margin-left: 2%; width: 15%;">Start
+        Date</button>
+      <button class="form-control overFlow" (click)="sortingUser('FName')" style="display: inline;margin-left: 2%; width: 15%;">End
+        Date</button>
+      <button class="form-control overFlow" (click)="sortingUser('LName')" style="display: inline;margin-left: 2%; width: 15%;">Priority</button>
+      <button class="form-control overFlow" (click)="sortingUser('EId')" style="display: inline;margin-left: 2%; width: 15%;">Completed</button>
+    </div>
   </div>
 
   <div *ngFor="let proj of filteredList">
     <hr style="border-top: dotted 1px;" />
-    <input type="text" class="form-control" style="width: 25%; display: inline; margin-left: 1%;" disabled value={{proj.Project}}>
-    <input type="text" class="form-control" style="width: 25%; display: inline; margin-left: 1%;" disabled value={{proj.StartDate}}>
-    <input type="text" class="form-control" style="width: 25%; display: inline; margin-left: 1%;" disabled value={{proj.EndDate}}>
-
-    <button class="btn btn-default" (click)="EditUser(proj)" style="width: 10%; display: inline; margin-left: 1%;">Edit</button>
-    <button class="btn btn-default" (click)="DeleteUser(proj)" style="width: 10%; display: inline; margin-left: 1%;">Delete</button>
+    <div class="row">
+      <div class="col-xs-8">
+        <div class="row" style=" padding-left: 15px;">
+          <label style="display: inline;">Project: </label>
+          <input type="text" style="display: inline; width: 80%;" class="form-control" disabled value={{proj.Project}}>
+        </div>
+        <div class="row" style=" margin-top: 2%;">
+          <div class="col-xs-6">
+            <label style="display: inline;">No of Tasks: </label>
+            <input type="text" style="display: inline; width: 54%;" class="form-control" disabled value={{proj.StartDate}}>
+          </div>
+          <div class="col-xs-6">
+            <label style="display: inline;">Completed: </label>
+            <input type="text" style="display: inline; width: 54%;" class="form-control" disabled value={{proj.StartDate}}>
+          </div>
+        </div>
+        <div class="row" style=" margin-top: 2%;">
+          <div class="col-xs-6">
+            <label style="display: inline;">Start Date: </label>
+            <input type="text" style="display: inline; width: 60%;" class="form-control" disabled value={{proj.StartDate}}>
+          </div>
+          <div class="col-xs-6">
+            <label style="display: inline;">End Date: </label>
+            <input type="text" style="display: inline; width: 60%;" class="form-control" disabled value={{proj.StartDate}}>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-2" style="margin-top: 7%;">
+        <label>Priority</label>
+        <input type="text" class="form-control" disabled value={{proj.Priority}}>
+      </div>
+      <div class="col-xs-2" style="margin-top: 5%;">
+        <button class="btn btn-default" style="width: 100%; height: 34px; margin-bottom: 10%;" (click)="EditUser(proj)">Update</button>
+        <button class="btn btn-default" style="width: 100%; height: 34px;margin-bottom: 10%;" (click)="DeleteUser(proj)">Suspend</button>
+      </div>
+    </div>
   </div>
 
   <div *ngIf="projListCount==0">

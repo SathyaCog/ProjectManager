@@ -1,8 +1,8 @@
-label {
+.labelClass {
   width: 15%;
 }
 
-input[type="text"] {
+.textClass {
   width: 40%;
 }
 
