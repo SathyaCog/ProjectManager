@@ -2,6 +2,9 @@
 using ProjectManager.InterfaceLayer;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
 
 namespace ProjectManager.BusinessLayer
 {
@@ -21,29 +24,28 @@ namespace ProjectManager.BusinessLayer
         {
 
             Collection<CommonEntities.Projects> projCollection = new Collection<CommonEntities.Projects>();
-            _projectManager.Projects
-                .Join(_projectManager.Users, p => p.ProjectID, u => u.ProjectID, (p, u) =>
-                   new
-                   {
-                       p.ProjectID,
-                       p.Project,
-                       p.StartDate,
-                       p.EndDate,
-                       p.Priority,
-                       u.UserID,
-                       ManagerName = u.FirstName + " " + u.LastName
-                   })
-               .Select(project => new CommonEntities.Projects()
-               {
-                   ProjectID = project.ProjectID,
-                   Project = project.Project,
-                   StartDate = project.StartDate,
-                   EndDate = project.EndDate,
-                   Priority = project.Priority,
-                   ManagerID = project.UserID,
-                   ManagerName = project.ManagerName
-               }).ToList()
-               .ForEach(y => projCollection.Add(y));
+
+            _projectManager.Projects.SelectMany
+            (
+                proj => _projectManager.Users.Where(user => proj.ProjectID == user.ProjectID).DefaultIfEmpty(),
+                (x, y) => new
+                {
+                    Projects = x,
+                    Users = y
+                }
+            ).ToList()
+                .ForEach(y => projCollection.Add(
+                    new CommonEntities.Projects
+                    {
+                        ProjectID = y.Projects.ProjectID,
+                        Project = y.Projects.Project,
+                        StartDate = y.Projects.StartDate,
+                        EndDate = y.Projects.EndDate,
+                        Priority = y.Projects.Priority,
+                        ManagerID = y.Users != null ? y.Users.UserID : 0,
+                        ManagerName = y.Users != null ? y.Users.FirstName + " " + y.Users.LastName : ""
+                    }
+                    ));
 
             return projCollection;
         }
@@ -68,47 +70,35 @@ namespace ProjectManager.BusinessLayer
             }
         }
 
-        //public CommonEntities.Projects GetProjectById(int projId)
-        //{
-
-        //    CommonEntities.Projects project = null;
-        //    project = _projectManager.Projects.Where(x => x.ProjectID == projId)
-        //       .Join(_projectManager.Users, p => p.ManagerID, u => u.UserID, (p, u) =>
-        //          new
-        //          {
-        //              p.ProjectID,
-        //              p.Project,
-        //              p.StartDate,
-        //              p.EndDate,
-        //              p.Priority,
-        //              p.ManagerID,
-        //              ManagerName = u.FirstName + " " + u.LastName
-        //          })
-        //      .Select(proj => new CommonEntities.Projects()
-        //      {
-        //          ProjectID = proj.ProjectID,
-        //          Project = proj.Project,
-        //          StartDate = proj.StartDate,
-        //          EndDate = proj.EndDate,
-        //          Priority = proj.Priority,
-        //          ManagerID = proj.ManagerID,
-        //          ManagerName = proj.ManagerName
-        //      }).FirstOrDefault();
-
-        //    return project;
-        //}
         public void UpdateProject(CommonEntities.Projects project)
         {
             var proj = _projectManager.Projects.Where(x => x.ProjectID == project.ProjectID).FirstOrDefault();
-            if (proj != null)
+            var user = _projectManager.Users.Where(x => x.UserID == project.ManagerID).FirstOrDefault();
+            if (proj != null && user != null)
             {
-                proj.ProjectID = project.ProjectID;
                 proj.Project = project.Project;
                 proj.StartDate = project.StartDate;
                 proj.EndDate = project.EndDate;
                 proj.Priority = project.Priority;
+                user.ProjectID = project.ProjectID;
                 _projectManager.SaveChanges();
             }
+        }
+
+        public void SuspendProject(int projectID)
+        {
+            Projects proj = new Projects
+            {
+                ProjectID = projectID
+            };
+            var user = _projectManager.Users.Where(x => x.ProjectID == projectID).FirstOrDefault();
+            if (user != null)
+            {
+                user.ProjectID = null;
+            }
+
+            _projectManager.Entry(proj).State = EntityState.Deleted;
+            _projectManager.SaveChanges();
         }
     }
 }

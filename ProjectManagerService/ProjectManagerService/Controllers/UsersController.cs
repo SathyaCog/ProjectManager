@@ -67,28 +67,6 @@ namespace ProjectManagerService.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("GetUserById/{userId}")]
-        public IHttpActionResult GetUserById(int userId)
-        {
-            ProjectMangerModel.Users user = null;
-
-            var blUser = _userBL.GetUserById(userId);
-            if (blUser == null)
-            {
-                return NotFound();
-            }
-            user = new ProjectMangerModel.Users
-            {
-                UserID = blUser.UserID,
-                FirstName = blUser.FirstName,
-                LastName = blUser.LastName,
-                EmployeeID = blUser.EmployeeID
-            };
-
-            return Ok(user);
-        }
-
         [HttpPost]
         [Route("UpdateUser")]
         public IHttpActionResult UpdateUser([FromBody]ProjectMangerModel.Users user)

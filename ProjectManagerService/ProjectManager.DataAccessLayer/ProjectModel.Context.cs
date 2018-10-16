@@ -12,19 +12,19 @@ namespace ProjectManager.DataAccessLayer
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    
+
     public partial class ProjectManagerEntities : DbContext
     {
         public ProjectManagerEntities()
             : base("name=ProjectManagerEntities")
         {
         }
-    
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();
         }
-    
+
         public virtual DbSet<ParentTasks> ParentTasks { get; set; }
         public virtual DbSet<Projects> Projects { get; set; }
         public virtual DbSet<Tasks> Tasks { get; set; }

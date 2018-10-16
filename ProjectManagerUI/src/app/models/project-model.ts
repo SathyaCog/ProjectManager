@@ -5,6 +5,7 @@ export class ProjectModel {
     EndDate?: Date;
     Priority: number;
     ManagerID: number;
+    ManagerName: string;
     NoofTasks: number;
     NoofCompletedTasks: number;
 }

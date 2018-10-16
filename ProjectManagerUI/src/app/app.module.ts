@@ -11,7 +11,9 @@ import { ViewTasksComponent } from './view-tasks/view-tasks.component';
 import { appRoutes } from './app-routing.module';
 import { ApiService } from './service/api-service';
 import { BootstrapModalModule } from 'ng2-bootstrap-modal';
-import { UserListModelComponent } from './user-list-model/user-list-model.component';
+import { UserListModelComponent } from './model-popup/user-list-model/user-list-model.component';
+import { ProjectListModelComponent } from './model-popup/project-list-model/project-list-model.component';
+import { TaskListModelComponent } from './model-popup/task-list-model/task-list-model.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { UserListModelComponent } from './user-list-model/user-list-model.compon
     UsersComponent,
     AddTasksComponent,
     ViewTasksComponent,
-    UserListModelComponent
+    UserListModelComponent,
+    ProjectListModelComponent,
+    TaskListModelComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +35,9 @@ import { UserListModelComponent } from './user-list-model/user-list-model.compon
     BootstrapModalModule.forRoot({ container: document.body })
   ],
   entryComponents: [
-    UserListModelComponent
+    UserListModelComponent,
+    ProjectListModelComponent,
+    TaskListModelComponent
   ],
   providers: [ApiService],
   bootstrap: [AppComponent]

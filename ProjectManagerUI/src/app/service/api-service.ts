@@ -15,18 +15,11 @@ export class ApiService {
     }
     userServiceUrl: string = "http://localhost:50329/api/Users";
     projectServiceUrl: string = "http://localhost:50329/api/Projects";
+    taskServiceUrl: string = "http://localhost:50329/api/Tasks";
 
     GetUsers(): Observable<UserModel[]> {
         let getUrl = this.userServiceUrl + '/GetUsers';
         return this._http.get(getUrl)
-            .pipe(map(response => { return response.json() }))
-            .catch(this.handleError)
-    }
-
-    GetUserById(userId): Observable<UserModel> {
-        let getUrl = this.userServiceUrl + '/GetUserById';
-
-        return this._http.get(getUrl + '/' + userId)
             .pipe(map(response => { return response.json() }))
             .catch(this.handleError)
     }
@@ -73,6 +66,46 @@ export class ApiService {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
         let addUrl = this.projectServiceUrl + '/AddProject'
+
+        return this._http.post(addUrl, body, options)
+            .catch(this.handleError);
+    }
+
+    UpdateProject(project) {
+        let body = JSON.stringify(project);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        let updateUrl = this.projectServiceUrl + '/UpdateProject'
+
+        return this._http.post(updateUrl, body, options)
+            .catch(this.handleError);
+    }
+
+    SuspendProject(projectID) {
+        let body = JSON.stringify(projectID);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        let deleteUrl = this.projectServiceUrl + '/SuspendProject'
+
+        return this._http.post(deleteUrl, body, options)
+            .catch(this.handleError);
+    }
+
+    AddTask(task) {
+        let body = JSON.stringify(task);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        let addUrl = this.taskServiceUrl + '/AddTask'
+
+        return this._http.post(addUrl, body, options)
+            .catch(this.handleError);
+    }
+
+    AddParentTask(task) {
+        let body = JSON.stringify(task);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        let addUrl = this.taskServiceUrl + '/AddParentTask'
 
         return this._http.post(addUrl, body, options)
             .catch(this.handleError);

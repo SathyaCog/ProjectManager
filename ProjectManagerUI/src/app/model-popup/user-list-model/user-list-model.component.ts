@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DialogComponent, DialogService } from "ng2-bootstrap-modal";
-import { UserModel } from '../models/user-model';
-import { ApiService } from '../service/api-service';
+import { UserModel } from '../../models/user-model';
+import { ApiService } from '../../service/api-service';
 
 @Component({
   selector: 'app-user-list-model',

@@ -15,6 +15,7 @@ namespace ProjectManagerService.Models
         public int Priority { get; set; }
         public int ManagerID { get; set; }
         public string ManagerName { get; set; }
-
+        public int NoofTasks { get; set; }
+        public int NoofCompletedTasks { get; set; }
     }
 }

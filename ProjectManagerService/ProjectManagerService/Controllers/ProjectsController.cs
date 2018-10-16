@@ -39,7 +39,11 @@ namespace ProjectManagerService.Controllers
                        Project = project.Project,
                        StartDate = project.StartDate,
                        EndDate = project.EndDate,
-                       Priority = project.Priority
+                       Priority = project.Priority,
+                       ManagerID = project.ManagerID,
+                       ManagerName = project.ManagerName,
+                       NoofTasks = project.NoofTasks,
+                       NoofCompletedTasks = project.NoofCompletedTasks
                    }));
 
             return Ok(projects);
@@ -69,30 +73,6 @@ namespace ProjectManagerService.Controllers
             }
         }
 
-        //[HttpGet]
-        //[Route("GetProjectById/{projId}")]
-        //public IHttpActionResult GetProjectById(int projId)
-        //{
-        //    ProjectMangerModel.Projects project = null;
-
-        //    var blProject = _projectBL.GetProjectById(projId);
-        //    if (blProject == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    project = new ProjectMangerModel.Projects
-        //    {
-        //        ProjectID = blProject.ProjectID,
-        //        Project = blProject.Project,
-        //        StartDate = blProject.StartDate,
-        //        EndDate = blProject.EndDate,
-        //        Priority = blProject.Priority,
-        //        ManagerID = blProject.ManagerID,
-        //        ManagerName = blProject.ManagerName
-        //    };
-
-        //    return Ok(project);
-        //}
 
         [HttpPost]
         [Route("UpdateProject")]
@@ -106,13 +86,29 @@ namespace ProjectManagerService.Controllers
                     Project = project.Project,
                     StartDate = project.StartDate,
                     EndDate = project.EndDate,
-                    Priority = project.Priority
+                    Priority = project.Priority,
+                    ManagerID = project.ManagerID
                 };
 
                 _projectBL.UpdateProject(proj);
                 return Ok();
             }
             catch (Exception)
+            {
+                return InternalServerError();
+            }
+        }
+
+        [HttpPost]
+        [Route("SuspendProject")]
+        public IHttpActionResult SuspendProject([FromBody]int projectID)
+        {
+            try
+            {
+                _projectBL.SuspendProject(projectID);
+                return Ok();
+            }
+            catch (Exception ex)
             {
                 return InternalServerError();
             }

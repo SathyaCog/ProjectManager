@@ -6,7 +6,7 @@ namespace ProjectManager.InterfaceLayer
     {
         Collection<CommonEntities.Projects> GetProjects();
         void AddProject(CommonEntities.Projects project);
-        //CommonEntities.Projects GetProjectById(int projId);
         void UpdateProject(CommonEntities.Projects project);
+        void SuspendProject(int projectID);
     }
 }

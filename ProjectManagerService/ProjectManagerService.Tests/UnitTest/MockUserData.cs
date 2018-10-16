@@ -20,20 +20,14 @@ namespace ProjectManagerService.Tests
 
             return users;
         }
+
         public void AddUser(CommonEntities.Users user)
         {
             Mock<ProjectManagerEntities> mockContext = MockDataSetList();
             var userBL = new UserBL(mockContext.Object);
             userBL.AddUser(user);
         }
-        public CommonEntities.Users GetUserById(int userId)
-        {
-            Mock<ProjectManagerEntities> mockContext = MockDataSetList();
-            var userBL = new UserBL(mockContext.Object);
-            CommonEntities.Users user = userBL.GetUserById(userId);
 
-            return user;
-        }
         public void UpdateUser(CommonEntities.Users user)
         {
             Mock<ProjectManagerEntities> mockContext = MockDataSetList();

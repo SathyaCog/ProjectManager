@@ -14,10 +14,12 @@ namespace ProjectManager.BusinessLayer
         {
             _projectManager = new ProjectManagerEntities();
         }
+
         public UserBL(ProjectManagerEntities projectManager)
         {
             _projectManager = projectManager;
         }
+
         public Collection<CommonEntities.Users> GetUsers()
         {
 
@@ -34,6 +36,7 @@ namespace ProjectManager.BusinessLayer
 
             return userCollection;
         }
+
         public void AddUser(CommonEntities.Users user)
         {
             Users ur = new Users
@@ -47,21 +50,7 @@ namespace ProjectManager.BusinessLayer
             _projectManager.Users.Add(ur);
             _projectManager.SaveChanges();
         }
-        public CommonEntities.Users GetUserById(int userId)
-        {
 
-            CommonEntities.Users user = null;
-            user = _projectManager.Users.Where(x => x.UserID == userId)
-               .Select(u => new CommonEntities.Users()
-               {
-                   UserID = u.UserID,
-                   FirstName = u.FirstName,
-                   LastName = u.LastName,
-                   EmployeeID = u.EmployeeID
-               }).FirstOrDefault();
-
-            return user;
-        }
         public void UpdateUser(CommonEntities.Users user)
         {
             var ur = _projectManager.Users.Where(x => x.UserID == user.UserID).FirstOrDefault();

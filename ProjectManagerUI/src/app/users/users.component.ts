@@ -26,7 +26,7 @@ export class UsersComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.AddButtonText = "Add";
+    this.AddButtonText = "Add User";
     this.ResetButtonText = "Reset";
     this.GetUsers();
   }
@@ -41,16 +41,6 @@ export class UsersComponent implements OnInit {
         function (error) {
           console.log(error);
         });
-  }
-
-  GetUserById(userId) {
-    this.apiService.GetUserById(userId)
-      .subscribe(res => {
-        this.FirstName = res.FirstName;
-        this.LastName = res.LastName;
-        this.EmployeeID = res.EmployeeID;
-        this.UserID = res.UserID;
-      });
   }
 
   AddUpdateUser() {
@@ -77,6 +67,15 @@ export class UsersComponent implements OnInit {
         function (error) {
           console.log(error);
         });
+  }
+
+  numberOnly(event): boolean {
+    const charCode = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      return false;
+    }
+    return true;
+
   }
 
   assignCopy() {
@@ -144,7 +143,7 @@ export class UsersComponent implements OnInit {
     this.LastName = undefined;
     this.EmployeeID = undefined;
     this.UserID = undefined;
-    this.AddButtonText = "Add";
+    this.AddButtonText = "Add User";
     this.ResetButtonText = "Reset";
   }
 

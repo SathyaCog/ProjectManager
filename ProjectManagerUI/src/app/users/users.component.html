@@ -3,34 +3,37 @@
     <h4 class="BottomMargin">Add User</h4>
     <div class="form-group">
       <label for="txtFName">First Name:</label>
-      <input type="text" class="form-control" [(ngModel)]="FirstName" id="txtFName" name="txtFName" required #txtFName="ngModel">
+      <input type="text" maxlength="30" class="form-control" [(ngModel)]="FirstName" id="txtFName" name="txtFName"
+        required #txtFName="ngModel">
       <div [hidden]="txtFName.valid || txtFName.pristine" class="alertDanger">
         First Name is required
       </div>
     </div>
     <div class="form-group">
       <label for="txtLName">Last Name:</label>
-      <input type="text" class="form-control" [(ngModel)]="LastName" id="txtLName" name="txtLName" required #txtLName="ngModel">
+      <input type="text" maxlength="30" class="form-control" [(ngModel)]="LastName" id="txtLName" name="txtLName"
+        required #txtLName="ngModel">
       <div [hidden]="txtLName.valid || txtLName.pristine" class="alertDanger">
         Last Name is required
       </div>
     </div>
     <div class="form-group">
       <label for="txtEmpId">Employee ID:</label>
-      <input type="text" class="form-control" [(ngModel)]="EmployeeID" id="txtEmpId" name="txtEmpId" required #txtEmpId="ngModel">
+      <input type="text" maxlength="6" (keypress)="numberOnly($event)" class="form-control" [(ngModel)]="EmployeeID" id="txtEmpId"
+        name="txtEmpId" required #txtEmpId="ngModel">
       <div [hidden]="txtEmpId.valid || txtEmpId.pristine" class="alertDanger">
         EmployeeID is required
       </div>
     </div>
-    <div style="padding-left: 42%;">
+    <div style="padding-left: 30%;">
       <button type="submit" class="btn btn-default" [disabled]="!txtFName.valid || !txtLName.valid || !txtEmpId.valid"
-        (click)="AddUpdateUser(); addUserForm.reset();">{{AddButtonText}}</button>
-      <button class="btn btn-default" (click)="ResetData(); addUserForm.reset();" style="margin-left: 5px;">{{ResetButtonText}}</button>
+        style="width: 20%;" (click)="AddUpdateUser(); addUserForm.reset();">{{AddButtonText}}</button>
+      <button class="btn btn-default" (click)="ResetData(); addUserForm.reset();" style="margin-left: 5px; width: 15%;">{{ResetButtonText}}</button>
     </div>
   </form>
   <hr style="border-top: 1px solid #333;" />
   <div>
-    <input type="text" class="form-control" (input)="filterItem()" [(ngModel)]="searchText" style="display: inline;"
+    <input type="text" class="form-control" (input)="filterItem()" [(ngModel)]="searchText" style="display: inline; width: 43%;"
       placeholder="Search...">
     <b style="display: inline; margin-left: 2%; width: 10%;">Sort:</b>
     <button class="form-control overFlow" (click)="sortingUser('FName')" style="display: inline;margin-left: 2%; width: 15%;">First

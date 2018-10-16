@@ -3,7 +3,7 @@ import { ProjectModel } from '../models/project-model';
 import { UserModel } from '../models/user-model';
 import { ApiService } from '../service/api-service';
 import { DialogService } from "ng2-bootstrap-modal";
-import { UserListModelComponent } from '../user-list-model/user-list-model.component';
+import { UserListModelComponent } from '../model-popup/user-list-model/user-list-model.component';
 
 @Component({
   selector: 'app-projects',
@@ -16,7 +16,7 @@ export class ProjectsComponent implements OnInit {
   StartDate: string;
   EndDate: string;
   Priority: number;
-  UserID: number;
+  ManagerID: number;
   ManagerName: string;
   NoofTasks: number;
   NoofCompletedTasks: number;
@@ -30,6 +30,7 @@ export class ProjectsComponent implements OnInit {
   startMinDate: string;
   endMinDate: string;
   UserList: UserModel[];
+  searchText: string;
 
   constructor(private apiService: ApiService, private dialogService: DialogService) {
     this.StartEndDateSelected = false;
@@ -37,16 +38,14 @@ export class ProjectsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.AddButtonText = "Add";
+    this.AddButtonText = "Add Project";
     this.ResetButtonText = "Reset";
     this.GetProjects();
-    this.GetUsers();
   }
 
   GetProjects() {
     this.apiService.GetProjects()
       .subscribe((data: ProjectModel[]) => {
-        console.log(data);
         this.projectList = data;
         this.assignCopy();
       },
@@ -57,7 +56,7 @@ export class ProjectsComponent implements OnInit {
 
   AddUpdateProject() {
     if (this.ProjectID) {
-      this.AddProject();
+      this.UpdateProject();
     }
     else {
       this.AddProject();
@@ -72,7 +71,7 @@ export class ProjectsComponent implements OnInit {
       this.object.StartDate = new Date(this.StartDate);
       this.object.EndDate = new Date(this.EndDate);
     }
-    this.object.ManagerID = this.UserID;
+    this.object.ManagerID = this.ManagerID;
 
     this.apiService.AddProject(this.object)
       .subscribe((data: any) => {
@@ -85,31 +84,109 @@ export class ProjectsComponent implements OnInit {
         });
   }
 
+  UpdateProject() {
+    this.object = new ProjectModel();
+    this.object.Project = this.Project;
+    this.object.Priority = this.Priority;
+    this.object.ProjectID = this.ProjectID;
+    if (this.StartEndDateSelected) {
+      this.object.StartDate = new Date(this.StartDate);
+      this.object.EndDate = new Date(this.EndDate);
+    }
+    this.object.ManagerID = this.ManagerID;
+
+    this.apiService.UpdateProject(this.object)
+      .subscribe((data: any) => {
+        console.log(data);
+        this.ResetData();
+        this.GetProjects();
+      },
+        function (error) {
+          console.log(error);
+        });
+  }
+
+  SuspendProject(projectID) {
+    this.apiService.SuspendProject(projectID)
+      .subscribe((data: any) => {
+        console.log(data);
+        this.ResetData();
+        this.GetProjects();
+      },
+        function (error) {
+          console.log(error);
+        });
+  }
+
+  EditProject(project) {
+    this.AddButtonText = "Update";
+    this.ResetButtonText = "Cancel";
+    this.ProjectID = project.ProjectID;
+    this.Project = project.Project;
+    this.Priority = project.Priority;
+    if (project.StartDate) {
+      this.StartDate = project.StartDate.split('T')[0];
+      this.EndDate = project.EndDate.split('T')[0];
+      this.StartEndDateSelected = true;
+    }
+    else {
+      this.StartEndDateSelected = false;
+      this.StartDate = undefined;
+      this.EndDate = undefined;
+    }
+    this.ManagerID = project.ManagerID;
+    this.ManagerName = project.ManagerName;
+  }
+
+  filterItem() {
+    if (!this.searchText) this.assignCopy();
+    this.filteredList = Object.assign([], this.projectList).filter(
+      item => (item.Project != undefined ? item.Project.toLowerCase().indexOf(this.searchText.toLowerCase()) > -1 : true)
+    )
+  }
+
+  sortingProject(sort) {
+    if (sort == 'SDate') {
+      this.filteredList.sort((a, b) => {
+        if (a.StartDate < b.StartDate) return -1;
+        else if (a.StartDate > b.StartDate) return 1;
+        else return 0;
+      });
+    }
+    else if (sort == 'EDate') {
+      this.filteredList.sort((a, b) => {
+        if (a.EndDate < b.EndDate) return -1;
+        else if (a.EndDate > b.EndDate) return 1;
+        else return 0;
+      });
+    }
+    else if (sort == 'Priority') {
+      this.filteredList.sort((a, b) => {
+        if (a.Priority < b.Priority) return -1;
+        else if (a.Priority > b.Priority) return 1;
+        else return 0;
+      });
+    }
+    else if (sort == 'Completed') {
+      this.filteredList.sort((a, b) => {
+        if (a.NoofCompletedTasks < b.NoofCompletedTasks) return -1;
+        else if (a.NoofCompletedTasks > b.NoofCompletedTasks) return 1;
+        else return 0;
+      });
+    }
+  }
+
   openDialog() {
     let disposable = this.dialogService.addDialog(UserListModelComponent, this.UserList)
       .subscribe((selectedUser) => {
         if (selectedUser) {
-          this.UserID = selectedUser.UserID;
+          this.ManagerID = selectedUser.UserID;
           this.ManagerName = selectedUser.FirstName + ' ' + selectedUser.LastName;
-        }
-        else {
-          alert('declined');
         }
       });
     setTimeout(() => {
       disposable.unsubscribe();
     }, 10000);
-  }
-
-  GetUsers() {
-    this.apiService.GetUsers()
-      .subscribe((data: UserModel[]) => {
-        console.log(data);
-        this.UserList = data;
-      },
-        function (error) {
-          console.log(error);
-        });
   }
 
   assignCopy() {
@@ -120,18 +197,18 @@ export class ProjectsComponent implements OnInit {
   ResetData() {
     this.object = new ProjectModel();
     this.Project = undefined;
-    this.Priority = undefined;
+    this.Priority = 0;
     this.StartEndDateSelected = false;
     this.StartDate = undefined;
     this.EndDate = undefined;
-    this.UserID = undefined;
-    this.AddButtonText = "Add";
+    this.ManagerID = undefined;
+    this.AddButtonText = "Add Project";
     this.ResetButtonText = "Reset";
   }
 
   DateCheckBoxChange() {
     if (this.StartEndDateSelected) {
-      this.StartDate = new Date().toISOString().split('T')[0];;
+      this.StartDate = new Date().toISOString().split('T')[0];
       let tmpDate = new Date();
       tmpDate.setDate(tmpDate.getDate() + 1);
       this.EndDate = tmpDate.toISOString().split('T')[0];
