@@ -1,6 +1,6 @@
 <div class="container">
   <form #addProjectForm="ngForm">
-    <h4 class="BottomMargin">Add Project</h4>
+    <h4 class="BottomMargin">{{projectHeader}}</h4>
     <div class="form-group">
       <label class="labelClass" for="txtProject">Project:</label>
       <input type="text" style="width: 53%;" maxlength="100" class="form-control textClass" [(ngModel)]="Project" id="txtProject"
@@ -14,9 +14,9 @@
         [(ngModel)]="StartEndDateSelected" #chkDate="ngModel">
       Set Start and End Date
       <input type="date" [disabled]="!StartEndDateSelected" id="txtSDate" name="txtSDate" style="margin-left: 1%; width: 20%;"
-        [min]="StartDate" [(ngModel)]="StartDate" required class="form-control" #txtSDate="ngModel">
+        [min]="startMinDate" [(ngModel)]="StartDate" required class="form-control" #txtSDate="ngModel">
       <input type="date" [disabled]="!StartEndDateSelected" id="txtEDate" name="txtEDate" style="margin-left: 1%; width: 20%;"
-        [min]="EndDate" [(ngModel)]="EndDate" required class="form-control" #txtEDate="ngModel">
+        [min]="endMinDate" [(ngModel)]="EndDate" required class="form-control" #txtEDate="ngModel">
       <div [hidden]="(StartEndDateSelected&&(txtSDate.valid && txtEDate.valid))|| chkDate.pristine || !StartEndDateSelected"
         class="alertDanger">
         Start and End Date is required
@@ -37,8 +37,8 @@
       </div>
     </div>
     <div style="padding-left: 50%;">
-      <button type="submit" class="btn btn-default" (click)="AddUpdateProject(); addProjectForm.reset();" style="width: 20%;">{{AddButtonText}}</button>
-      <button class="btn btn-default" (click)="ResetData(); addProjectForm.reset();" style="margin-left: 5px; width: 15%;">{{ResetButtonText}}</button>
+      <button type="submit" class="btn btn-default" (click)="AddUpdateProject();" style="width: 20%;">{{AddButtonText}}</button>
+      <button class="btn btn-default" (click)="ResetData();" style="margin-left: 5px; width: 15%;">{{ResetButtonText}}</button>
     </div>
   </form>
   <hr style="border-top: 1px solid #333;" />

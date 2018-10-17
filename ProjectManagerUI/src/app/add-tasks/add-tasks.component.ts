@@ -7,7 +7,9 @@ import { ApiService } from '../service/api-service';
 import { DialogService } from "ng2-bootstrap-modal";
 import { UserListModelComponent } from '../model-popup/user-list-model/user-list-model.component';
 import { ProjectListModelComponent } from '../model-popup/project-list-model/project-list-model.component';
-
+import { TaskListModelComponent } from '../model-popup/task-list-model/task-list-model.component';
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-add-tasks',
@@ -31,13 +33,46 @@ export class AddTasksComponent implements OnInit {
   parentTaskModel: ParentTaskModel;
   projectList: ProjectModel[];
   UserList: UserModel[];
+  parentTaskList: ParentTaskModel[];
+  startMinDate: string;
+  endMinDate: string;
+  addButtonText: string;
+  taskHeader: string;
 
-  constructor(private apiService: ApiService, private dialogService: DialogService) {
-    this.Priority = 0;
-    this.StartDate = new Date().toISOString().split('T')[0];
+  constructor(private apiService: ApiService, private dialogService: DialogService, private route: ActivatedRoute, private location: Location) {
+
+    this.startMinDate = new Date().toISOString().split('T')[0];
     let tmpDate = new Date();
     tmpDate.setDate(tmpDate.getDate() + 1);
-    this.EndDate = tmpDate.toISOString().split('T')[0];
+    this.endMinDate = tmpDate.toISOString().split('T')[0];
+
+    if (route.snapshot.params['task']) {
+      let tModel = JSON.parse(route.snapshot.params['task']);
+      this.TaskID = tModel.TaskID;
+      this.Task = tModel.Task;
+      this.ProjectID = tModel.ProjectID;
+      this.ParentTaskID = tModel.ParentTaskID;
+      this.Project = tModel.Project;
+      this.Priority = tModel.Priority;
+      this.StartDate = tModel.StartDate.split('T')[0];
+      this.EndDate = tModel.EndDate.split('T')[0];
+      this.UserID = tModel.UserID;
+      this.ParentTask = tModel.ParentTask;
+      this.UserName = tModel.UserName;
+      this.addButtonText = "Update Task";
+      this.taskHeader = "Update Task";
+
+    }
+    else {
+      this.Priority = 0;
+      this.StartDate = new Date().toISOString().split('T')[0];
+      let tmpDate = new Date();
+      tmpDate.setDate(tmpDate.getDate() + 1);
+      this.EndDate = tmpDate.toISOString().split('T')[0];
+      this.addButtonText = "Add Task";
+      this.taskHeader = "Add Task";
+
+    }
   }
 
   ngOnInit() {
@@ -68,12 +103,34 @@ export class AddTasksComponent implements OnInit {
   }
 
   AddUpdateTask() {
-    if (this.ProjectID) {
-      this.AddTask();
+
+    if (this.TaskID) {
+      this.UpdateTask();
     }
     else {
       this.AddTask();
     }
+  }
+
+  UpdateTask() {
+    this.taskModel = new TaskModel();
+    this.taskModel.TaskID = this.TaskID;
+    this.taskModel.Task = this.Task;
+    this.taskModel.ProjectID = this.ProjectID;
+    this.taskModel.ParentTaskID = this.ParentTaskID;
+    this.taskModel.Project = this.Project;
+    this.taskModel.Priority = this.Priority;
+    this.taskModel.StartDate = new Date(this.StartDate);
+    this.taskModel.EndDate = new Date(this.EndDate);
+    this.taskModel.UserID = this.UserID;
+    this.apiService.UpdateTask(this.taskModel)
+      .subscribe((data: any) => {
+        console.log(data);
+        this.ResetTask();
+      },
+        function (error) {
+          console.log(error);
+        });
   }
 
   AddTask() {
@@ -84,6 +141,7 @@ export class AddTasksComponent implements OnInit {
       this.apiService.AddParentTask(this.parentTaskModel)
         .subscribe((data: any) => {
           console.log(data);
+          this.ResetTask();
         },
           function (error) {
             console.log(error);
@@ -93,6 +151,7 @@ export class AddTasksComponent implements OnInit {
       this.taskModel = new TaskModel();
       this.taskModel.Task = this.Task;
       this.taskModel.ProjectID = this.ProjectID;
+      this.taskModel.ParentTaskID = this.ParentTaskID;
       this.taskModel.Project = this.Project;
       this.taskModel.Priority = this.Priority;
       this.taskModel.StartDate = new Date(this.StartDate);
@@ -106,6 +165,25 @@ export class AddTasksComponent implements OnInit {
             console.log(error);
           });
     }
+  }
+
+  ResetTask() {
+    this.Priority = 0;
+    this.StartDate = new Date().toISOString().split('T')[0];
+    let tmpDate = new Date();
+    tmpDate.setDate(tmpDate.getDate() + 1);
+    this.EndDate = tmpDate.toISOString().split('T')[0];
+    this.addButtonText = "Add Task";
+    this.taskHeader = "Add Task";
+
+    this.TaskID = undefined;
+    this.Task = undefined;
+    this.ProjectID = undefined;
+    this.ParentTaskID = undefined;
+    this.Project = undefined;
+    this.UserID = undefined;
+    this.ParentTask = undefined;
+    this.UserName = undefined;
   }
 
   openProjectDialog() {
@@ -122,7 +200,16 @@ export class AddTasksComponent implements OnInit {
   }
 
   openParentTaskDialog() {
-
+    let disposable = this.dialogService.addDialog(TaskListModelComponent, this.parentTaskList)
+      .subscribe((selectedTask) => {
+        if (selectedTask) {
+          this.ParentTaskID = selectedTask.ParentTaskID;
+          this.ParentTask = selectedTask.ParentTask;
+        }
+      });
+    setTimeout(() => {
+      disposable.unsubscribe();
+    }, 10000);
   }
 
   openUserDialog() {

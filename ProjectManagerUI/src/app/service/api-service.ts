@@ -4,6 +4,8 @@ import 'rxjs/Rx'
 import { Observable } from 'rxjs';
 import { UserModel } from '../models/user-model';
 import { ProjectModel } from '../models/project-model';
+import { TaskModel } from '../models/task-model';
+import { ParentTaskModel } from '../models/task-model';
 
 import { map } from 'rxjs/operators';
 import 'rxjs/add/operator/map';
@@ -101,6 +103,16 @@ export class ApiService {
             .catch(this.handleError);
     }
 
+    UpdateTask(task) {
+        let body = JSON.stringify(task);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        let updateUrl = this.taskServiceUrl + '/UpdateTask'
+
+        return this._http.post(updateUrl, body, options)
+            .catch(this.handleError);
+    }
+
     AddParentTask(task) {
         let body = JSON.stringify(task);
         let headers = new Headers({ 'Content-Type': 'application/json' });
@@ -111,8 +123,32 @@ export class ApiService {
             .catch(this.handleError);
     }
 
+    GetParentTasks(): Observable<ParentTaskModel[]> {
+        let getUrl = this.taskServiceUrl + '/GetParentTasks';
+        return this._http.get(getUrl)
+            .pipe(map(response => { return response.json() }))
+            .catch(this.handleError)
+    }
+
+    GetTasks(projectID): Observable<TaskModel[]> {
+        let getUrl = this.taskServiceUrl + '/GetTasks/' + projectID;
+        return this._http.get(getUrl)
+            .pipe(map(response => { return response.json() }))
+            .catch(this.handleError)
+    }
+
+    EndTask(task) {
+        let body = JSON.stringify(task);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        let endUrl = this.taskServiceUrl + '/EndTask'
+
+        return this._http.post(endUrl, body, options)
+            .catch(this.handleError);
+    }
+
     private handleError(error: Response | any) {
-        console.error('UserService::handleError', error);
+        console.error('ApiService:handleError', error);
         return Observable.throw(error);
     }
 }

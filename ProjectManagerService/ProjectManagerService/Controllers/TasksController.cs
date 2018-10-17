@@ -54,6 +54,33 @@ namespace ProjectManagerService.Controllers
         }
 
         [HttpPost]
+        [Route("UpdateTask")]
+        public IHttpActionResult UpdateTask([FromBody]ProjectMangerModel.Tasks task)
+        {
+            try
+            {
+                CommonEntities.Tasks tk = new CommonEntities.Tasks
+                {
+                    TaskID = task.TaskID,
+                    Task = task.Task,
+                    ProjectID = task.ProjectID,
+                    Priority = task.Priority,
+                    ParentTaskID = task.ParentTaskID,
+                    StartDate = task.StartDate,
+                    EndDate = task.EndDate,
+                    UserID = task.UserID
+                };
+
+                _taskBL.UpdateTask(tk);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+        }
+
+        [HttpPost]
         [Route("AddParentTask")]
         public IHttpActionResult AddParentTask([FromBody]ProjectMangerModel.ParentTasks task)
         {
@@ -90,5 +117,50 @@ namespace ProjectManagerService.Controllers
             return Ok(parentTasks);
         }
 
+        [HttpGet]
+        [Route("GetTasks/{projectID}")]
+        public IHttpActionResult GetTasks(int projectID)
+        {
+            Collection<ProjectMangerModel.Tasks> tasks = new Collection<ProjectMangerModel.Tasks>();
+
+            var blTasks = _taskBL.GetTasks(projectID);
+            blTasks.ToList()
+                .ForEach(s => tasks.Add(
+                   new ProjectMangerModel.Tasks
+                   {
+                       Task = s.Task,
+                       ProjectID = s.ProjectID,
+                       Project = s.Project,
+                       ParentTask = s.ParentTask,
+                       Priority = s.Priority,
+                       StartDate = s.StartDate,
+                       EndDate = s.EndDate,
+                       TaskID = s.TaskID,
+                       Status = s.Status,
+                       UserID = s.UserID,
+                       UserName = s.UserName
+                   }));
+
+            return Ok(tasks);
+        }
+
+        [HttpPost]
+        [Route("EndTask")]
+        public IHttpActionResult EndTask([FromBody]ProjectMangerModel.Tasks task)
+        {
+            try
+            {
+                CommonEntities.Tasks tk = new CommonEntities.Tasks
+                {
+                    TaskID = task.TaskID
+                };
+                _taskBL.EndTask(tk);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+        }
     }
 }

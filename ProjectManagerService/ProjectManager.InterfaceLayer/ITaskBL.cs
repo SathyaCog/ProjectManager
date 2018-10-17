@@ -12,5 +12,8 @@ namespace ProjectManager.InterfaceLayer
         void AddTask(CommonEntities.Tasks task);
         void AddParentTask(CommonEntities.ParentTasks pTask);
         Collection<CommonEntities.ParentTasks> GetParentTasks();
+        Collection<CommonEntities.Tasks> GetTasks(int projectID);
+        void EndTask(CommonEntities.Tasks task);
+        void UpdateTask(CommonEntities.Tasks task);
     }
 }

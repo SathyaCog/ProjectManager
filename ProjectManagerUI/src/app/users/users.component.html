@@ -1,6 +1,6 @@
 <div class="container">
   <form #addUserForm="ngForm">
-    <h4 class="BottomMargin">Add User</h4>
+    <h4 class="BottomMargin">{{userHeader}}</h4>
     <div class="form-group">
       <label for="txtFName">First Name:</label>
       <input type="text" maxlength="30" class="form-control" [(ngModel)]="FirstName" id="txtFName" name="txtFName"
@@ -27,8 +27,8 @@
     </div>
     <div style="padding-left: 30%;">
       <button type="submit" class="btn btn-default" [disabled]="!txtFName.valid || !txtLName.valid || !txtEmpId.valid"
-        style="width: 20%;" (click)="AddUpdateUser(); addUserForm.reset();">{{AddButtonText}}</button>
-      <button class="btn btn-default" (click)="ResetData(); addUserForm.reset();" style="margin-left: 5px; width: 15%;">{{ResetButtonText}}</button>
+        style="width: 20%;" (click)="AddUpdateUser();">{{AddButtonText}}</button>
+      <button class="btn btn-default" (click)="ResetData();" style="margin-left: 5px; width: 15%;">{{ResetButtonText}}</button>
     </div>
   </form>
   <hr style="border-top: 1px solid #333;" />

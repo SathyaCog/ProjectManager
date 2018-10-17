@@ -9,8 +9,8 @@ namespace ProjectManagerService.Models
     public class Tasks
     {
         public int TaskID { get; set; }
-        public int ParentTaskID { get; set; }
-        public int ProjectID { get; set; }
+        public int? ParentTaskID { get; set; }
+        public int? ProjectID { get; set; }
         public string ParentTask { get; set; }
         public string Project { get; set; }
         public string Task { get; set; }

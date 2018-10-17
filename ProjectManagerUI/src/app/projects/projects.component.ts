@@ -31,10 +31,21 @@ export class ProjectsComponent implements OnInit {
   endMinDate: string;
   UserList: UserModel[];
   searchText: string;
+  projectHeader: string
 
   constructor(private apiService: ApiService, private dialogService: DialogService) {
     this.StartEndDateSelected = false;
     this.Priority = 0;
+    if (this.ProjectID) {
+      this.projectHeader = "Add Project";
+    }
+    else {
+      this.projectHeader = "Update Project";
+    }
+    this.startMinDate = new Date().toISOString().split('T')[0];
+    let tmpDate = new Date();
+    tmpDate.setDate(tmpDate.getDate() + 1);
+    this.endMinDate = tmpDate.toISOString().split('T')[0];
   }
 
   ngOnInit() {
@@ -202,6 +213,7 @@ export class ProjectsComponent implements OnInit {
     this.StartDate = undefined;
     this.EndDate = undefined;
     this.ManagerID = undefined;
+    this.ManagerName = undefined;
     this.AddButtonText = "Add Project";
     this.ResetButtonText = "Reset";
   }

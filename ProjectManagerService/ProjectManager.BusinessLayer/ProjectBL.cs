@@ -74,12 +74,18 @@ namespace ProjectManager.BusinessLayer
         {
             var proj = _projectManager.Projects.Where(x => x.ProjectID == project.ProjectID).FirstOrDefault();
             var user = _projectManager.Users.Where(x => x.UserID == project.ManagerID).FirstOrDefault();
+            var extUser = _projectManager.Users.Where(x => x.ProjectID == project.ProjectID).FirstOrDefault();
+
             if (proj != null && user != null)
             {
                 proj.Project = project.Project;
                 proj.StartDate = project.StartDate;
                 proj.EndDate = project.EndDate;
                 proj.Priority = project.Priority;
+                if (extUser != null)
+                {
+                    extUser.ProjectID = null;
+                }
                 user.ProjectID = project.ProjectID;
                 _projectManager.SaveChanges();
             }

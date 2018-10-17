@@ -1,6 +1,6 @@
 <div class="container">
   <form #addTaskForm="ngForm">
-    <h4 class="BottomMargin">Add Task</h4>
+    <h4 class="BottomMargin">{{taskHeader}}</h4>
     <div class="form-group">
       <label class="labelClass" for="txtProject">Project:</label>
       <input type="text" disabled class="form-control textClass" [(ngModel)]="Project" id="txtProject" name="txtProject"
@@ -19,8 +19,8 @@
       </div>
     </div>
     <div class="form-group">
-      <input type="checkbox" style="margin-right: 1%;margin-left: 15%; " id="chkPTask" name="chkPTask" (change)="TaskCheckBoxChange()"
-        [(ngModel)]="IsParentTask"> Parent Task
+      <input type="checkbox" [disabled]="TaskID" style="margin-right: 1%;margin-left: 15%; " id="chkPTask" name="chkPTask"
+        (change)="TaskCheckBoxChange()" [(ngModel)]="IsParentTask"> Parent Task
     </div>
     <div class="form-group">
       <label class="labelClass" for="txtPriority">Priority:</label>
@@ -36,10 +36,10 @@
     <div class="form-group">
       <label for="txtSDate">Start Date:</label>
       <input type="date" [disabled]="IsParentTask" id="txtSDate" name="txtSDate" style="margin-left: 1%; width: 23%;"
-        [min]="StartDate" [(ngModel)]="StartDate" required class="form-control">
+        [min]="startMinDate" [(ngModel)]="StartDate" required class="form-control">
       <label for="txtEDate" style="margin-left: 3%;">End Date:</label>
       <input type="date" [disabled]="IsParentTask" id="txtEDate" name="txtEDate" style="margin-left: 1%; width: 23%;"
-        [min]="EndDate" [(ngModel)]="EndDate" required class="form-control">
+        [min]="endMinDate" [(ngModel)]="EndDate" required class="form-control">
     </div>
     <div class="form-group">
       <label class="labelClass" for="txtUser">User:</label>
@@ -51,8 +51,8 @@
       </div>
     </div>
     <div style="padding-left: 50%;">
-      <button type="submit" class="btn btn-default" (click)="AddUpdateTask(); addTaskForm.reset();">Add Task</button>
-      <button class="btn btn-default" (click)="ResetData(); addTaskForm.reset();" style="margin-left: 5px;">Reset</button>
+      <button type="submit" class="btn btn-default" (click)="AddUpdateTask();">{{addButtonText}}</button>
+      <button class="btn btn-default" (click)="ResetTask();" style="margin-left: 5px;">Reset</button>
     </div>
   </form>
 </div>

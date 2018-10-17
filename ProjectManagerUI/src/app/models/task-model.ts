@@ -10,6 +10,7 @@ export class TaskModel {
     EndDate?: Date;
     UserID: number;
     UserName: string;
+    Status: boolean;
 }
 
 export class ParentTaskModel {
