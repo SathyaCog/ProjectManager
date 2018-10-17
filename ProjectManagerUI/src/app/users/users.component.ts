@@ -20,9 +20,15 @@ export class UsersComponent implements OnInit {
   searchText: string;
   sortByFName: string;
   userListCount: number;
+  userHeader: string;
 
   constructor(private apiService: ApiService) {
-
+    if (this.UserID) {
+      this.userHeader = "Add User";
+    }
+    else {
+      this.userHeader = "Update User";
+    }
   }
 
   ngOnInit() {
