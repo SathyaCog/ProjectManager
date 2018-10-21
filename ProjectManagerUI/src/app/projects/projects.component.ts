@@ -31,17 +31,16 @@ export class ProjectsComponent implements OnInit {
   endMinDate: string;
   UserList: UserModel[];
   searchText: string;
-  projectHeader: string
+  projectNameError: boolean;
+  StartEndDateError: boolean;
+  managerError: boolean;
 
   constructor(private apiService: ApiService, private dialogService: DialogService) {
+    this.projectNameError = false;
+    this.StartEndDateError = false;
+    this.managerError = false;
     this.StartEndDateSelected = false;
     this.Priority = 0;
-    if (this.ProjectID) {
-      this.projectHeader = "Add Project";
-    }
-    else {
-      this.projectHeader = "Update Project";
-    }
     this.startMinDate = new Date().toISOString().split('T')[0];
     let tmpDate = new Date();
     tmpDate.setDate(tmpDate.getDate() + 1);
@@ -66,6 +65,10 @@ export class ProjectsComponent implements OnInit {
   }
 
   AddUpdateProject() {
+
+    document.getElementById('userMsg').innerText = "";
+    document.getElementById('userMsg').style.color = "none";
+
     if (this.ProjectID) {
       this.UpdateProject();
     }
@@ -75,57 +78,123 @@ export class ProjectsComponent implements OnInit {
   }
 
   AddProject() {
-    this.object = new ProjectModel();
-    this.object.Project = this.Project;
-    this.object.Priority = this.Priority;
-    if (this.StartEndDateSelected) {
-      this.object.StartDate = new Date(this.StartDate);
-      this.object.EndDate = new Date(this.EndDate);
+    var error = false;
+    if (!this.Project) {
+      this.projectNameError = true;
+      error = true;
     }
-    this.object.ManagerID = this.ManagerID;
+    else {
+      this.projectNameError = false;
+    }
 
-    this.apiService.AddProject(this.object)
-      .subscribe((data: any) => {
-        console.log(data);
-        this.ResetData();
-        this.GetProjects();
-      },
-        function (error) {
-          console.log(error);
-        });
+    if (this.StartEndDateSelected && (!this.StartDate || !this.EndDate)) {
+      this.StartEndDateError = true;
+      error = true;
+    }
+    else {
+      this.StartEndDateError = false;
+    }
+
+    if (!this.ManagerID) {
+      this.managerError = true;
+      error = true;
+    }
+    else {
+      this.managerError = false;
+    }
+
+    if (!error) {
+      this.object = new ProjectModel();
+      this.object.Project = this.Project;
+      this.object.Priority = this.Priority;
+      if (this.StartEndDateSelected) {
+        this.object.StartDate = new Date(this.StartDate);
+        this.object.EndDate = new Date(this.EndDate);
+      }
+      this.object.ManagerID = this.ManagerID;
+
+      this.apiService.AddProject(this.object)
+        .subscribe((data: any) => {
+          document.getElementById('userMsg').innerText = "Project added successfully...";
+          document.getElementById('userMsg').style.color = "green";
+          this.ResetData();
+          this.GetProjects();
+        },
+          function (error) {
+            console.log(error);
+            document.getElementById('userMsg').innerText = "Error occurred. Please try again...";
+            document.getElementById('userMsg').style.color = "red";
+          });
+    }
   }
 
   UpdateProject() {
-    this.object = new ProjectModel();
-    this.object.Project = this.Project;
-    this.object.Priority = this.Priority;
-    this.object.ProjectID = this.ProjectID;
-    if (this.StartEndDateSelected) {
-      this.object.StartDate = new Date(this.StartDate);
-      this.object.EndDate = new Date(this.EndDate);
+    var error = false;
+    if (!this.Project) {
+      this.projectNameError = true;
+      error = true;
     }
-    this.object.ManagerID = this.ManagerID;
+    else {
+      this.projectNameError = false;
+    }
 
-    this.apiService.UpdateProject(this.object)
-      .subscribe((data: any) => {
-        console.log(data);
-        this.ResetData();
-        this.GetProjects();
-      },
-        function (error) {
-          console.log(error);
-        });
+    if (this.StartEndDateSelected && (!this.StartDate || !this.EndDate)) {
+      this.StartEndDateError = true;
+      error = true;
+    }
+    else {
+      this.StartEndDateError = false;
+    }
+
+    if (!this.ManagerID) {
+      this.managerError = true;
+      error = true;
+    }
+    else {
+      this.managerError = false;
+    }
+
+    if (!error) {
+      this.object = new ProjectModel();
+      this.object.Project = this.Project;
+      this.object.Priority = this.Priority;
+      this.object.ProjectID = this.ProjectID;
+      if (this.StartEndDateSelected) {
+        this.object.StartDate = new Date(this.StartDate);
+        this.object.EndDate = new Date(this.EndDate);
+      }
+      this.object.ManagerID = this.ManagerID;
+
+      this.apiService.UpdateProject(this.object)
+        .subscribe((data: any) => {
+          document.getElementById('userMsg').innerText = "Project updated successfully...";
+          document.getElementById('userMsg').style.color = "green";
+          this.ResetData();
+          this.GetProjects();
+        },
+          function (error) {
+            console.log(error);
+            document.getElementById('userMsg').innerText = "Error occurred. Please try again...";
+            document.getElementById('userMsg').style.color = "red";
+          });
+    }
   }
 
   SuspendProject(projectID) {
+    document.getElementById('userMsg').innerText = "";
+    document.getElementById('userMsg').style.color = "none";
+
     this.apiService.SuspendProject(projectID)
       .subscribe((data: any) => {
-        console.log(data);
+        document.getElementById('userMsg').innerText = "Project suspended successfully...";
+        document.getElementById('userMsg').style.color = "green";
         this.ResetData();
         this.GetProjects();
       },
         function (error) {
           console.log(error);
+          document.getElementById('userMsg').innerText = "Error occurred. Please try again...";
+          document.getElementById('userMsg').style.color = "red";
         });
   }
 
@@ -214,8 +283,13 @@ export class ProjectsComponent implements OnInit {
     this.EndDate = undefined;
     this.ManagerID = undefined;
     this.ManagerName = undefined;
+    this.projectNameError = false;
+    this.StartEndDateError = false;
+    this.managerError = false;
     this.AddButtonText = "Add Project";
     this.ResetButtonText = "Reset";
+    document.getElementById('userMsg').innerText = "";
+    document.getElementById('userMsg').style.color = "none";
   }
 
   DateCheckBoxChange() {
@@ -224,10 +298,12 @@ export class ProjectsComponent implements OnInit {
       let tmpDate = new Date();
       tmpDate.setDate(tmpDate.getDate() + 1);
       this.EndDate = tmpDate.toISOString().split('T')[0];
+      this.StartEndDateError = false;
     }
     else {
       this.StartDate = undefined;
       this.EndDate = undefined;
+      this.StartEndDateError = false;
     }
   }
 

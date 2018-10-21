@@ -7,4 +7,14 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'ProjectManagerUI';
+  selectedItem: string;
+
+  constructor() {
+    this.selectedItem = 'addUsers';
+  }
+
+  listClick(newValue) {
+    this.selectedItem = newValue;
+  }
+
 }

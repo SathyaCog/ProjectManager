@@ -37,7 +37,10 @@ export class AddTasksComponent implements OnInit {
   startMinDate: string;
   endMinDate: string;
   addButtonText: string;
-  taskHeader: string;
+  taskError: boolean;
+  projectError: boolean;
+  startEndDateError: boolean;
+  userError: boolean;
 
   constructor(private apiService: ApiService, private dialogService: DialogService, private route: ActivatedRoute, private location: Location) {
 
@@ -45,6 +48,10 @@ export class AddTasksComponent implements OnInit {
     let tmpDate = new Date();
     tmpDate.setDate(tmpDate.getDate() + 1);
     this.endMinDate = tmpDate.toISOString().split('T')[0];
+    this.taskError = false;
+    this.projectError = false;
+    this.startEndDateError = false;
+    this.userError = false;
 
     if (route.snapshot.params['task']) {
       let tModel = JSON.parse(route.snapshot.params['task']);
@@ -60,8 +67,6 @@ export class AddTasksComponent implements OnInit {
       this.ParentTask = tModel.ParentTask;
       this.UserName = tModel.UserName;
       this.addButtonText = "Update Task";
-      this.taskHeader = "Update Task";
-
     }
     else {
       this.Priority = 0;
@@ -70,8 +75,6 @@ export class AddTasksComponent implements OnInit {
       tmpDate.setDate(tmpDate.getDate() + 1);
       this.EndDate = tmpDate.toISOString().split('T')[0];
       this.addButtonText = "Add Task";
-      this.taskHeader = "Add Task";
-
     }
   }
 
@@ -90,6 +93,9 @@ export class AddTasksComponent implements OnInit {
       this.Priority = 0;
       this.ParentTaskID = undefined;
       this.UserID = undefined;
+      this.projectError = false;
+      this.startEndDateError = false;
+      this.userError = false;
     }
     else {
       document.getElementById('projDialogButton').style.display = 'block';
@@ -103,6 +109,8 @@ export class AddTasksComponent implements OnInit {
   }
 
   AddUpdateTask() {
+    document.getElementById('userMsg').innerText = "";
+    document.getElementById('userMsg').style.color = "none";
 
     if (this.TaskID) {
       this.UpdateTask();
@@ -113,42 +121,46 @@ export class AddTasksComponent implements OnInit {
   }
 
   UpdateTask() {
-    this.taskModel = new TaskModel();
-    this.taskModel.TaskID = this.TaskID;
-    this.taskModel.Task = this.Task;
-    this.taskModel.ProjectID = this.ProjectID;
-    this.taskModel.ParentTaskID = this.ParentTaskID;
-    this.taskModel.Project = this.Project;
-    this.taskModel.Priority = this.Priority;
-    this.taskModel.StartDate = new Date(this.StartDate);
-    this.taskModel.EndDate = new Date(this.EndDate);
-    this.taskModel.UserID = this.UserID;
-    this.apiService.UpdateTask(this.taskModel)
-      .subscribe((data: any) => {
-        console.log(data);
-        this.ResetTask();
-      },
-        function (error) {
-          console.log(error);
-        });
-  }
-
-  AddTask() {
-    if (this.IsParentTask) {
-      this.parentTaskModel = new ParentTaskModel();
-      this.parentTaskModel.ParentTask = this.Task;
-
-      this.apiService.AddParentTask(this.parentTaskModel)
-        .subscribe((data: any) => {
-          console.log(data);
-          this.ResetTask();
-        },
-          function (error) {
-            console.log(error);
-          });
+    var error = false;
+    if (!this.Task) {
+      this.taskError = true;
+      error = true;
     }
     else {
+      this.taskError = false;
+      error = false;
+    }
+
+    if (!this.ProjectID) {
+      this.projectError = true;
+      error = true;
+    }
+    else {
+      this.projectError = false;
+      error = false;
+    }
+
+    if (!this.UserID) {
+      this.userError = true;
+      error = true;
+    }
+    else {
+      this.userError = false;
+      error = false;
+    }
+
+    if (!this.StartDate || !this.EndDate) {
+      this.startEndDateError = true;
+      error = true;
+    }
+    else {
+      this.startEndDateError = false;
+      error = false;
+    }
+
+    if (!error) {
       this.taskModel = new TaskModel();
+      this.taskModel.TaskID = this.TaskID;
       this.taskModel.Task = this.Task;
       this.taskModel.ProjectID = this.ProjectID;
       this.taskModel.ParentTaskID = this.ParentTaskID;
@@ -157,13 +169,105 @@ export class AddTasksComponent implements OnInit {
       this.taskModel.StartDate = new Date(this.StartDate);
       this.taskModel.EndDate = new Date(this.EndDate);
       this.taskModel.UserID = this.UserID;
-      this.apiService.AddTask(this.taskModel)
+      this.apiService.UpdateTask(this.taskModel)
         .subscribe((data: any) => {
-          console.log(data);
+          this.ResetTask();
+          document.getElementById('userMsg').innerText = "Task updated successfully...";
+          document.getElementById('userMsg').style.color = "green";
         },
           function (error) {
             console.log(error);
+            document.getElementById('userMsg').innerText = "Error occurred. Please try again...";
+            document.getElementById('userMsg').style.color = "red";
           });
+    }
+  }
+
+  AddTask() {
+    if (this.IsParentTask) {
+      this.projectError = false;
+      this.startEndDateError = false;
+      this.userError = false;
+      if (!this.Task) {
+        this.taskError = true;
+      }
+      else {
+        this.taskError = false;
+      }
+
+      if (!this.taskError) {
+        this.parentTaskModel = new ParentTaskModel();
+        this.parentTaskModel.ParentTask = this.Task;
+
+        this.apiService.AddParentTask(this.parentTaskModel)
+          .subscribe((data: any) => {
+            this.ResetTask();
+            document.getElementById('userMsg').innerText = "Task added successfully...";
+            document.getElementById('userMsg').style.color = "green";
+          },
+            function (error) {
+              console.log(error);
+              document.getElementById('userMsg').innerText = "Error occurred. Please try again...";
+              document.getElementById('userMsg').style.color = "red";
+            });
+      }
+    }
+    else {
+      var error = false;
+      if (!this.Task) {
+        this.taskError = true;
+        error = true;
+      }
+      else {
+        this.taskError = false;
+      }
+
+      if (!this.ProjectID) {
+        this.projectError = true;
+        error = true;
+      }
+      else {
+        this.projectError = false;
+      }
+
+      if (!this.UserID) {
+        this.userError = true;
+        error = true;
+      }
+      else {
+        this.userError = false;
+      }
+
+      if (!this.StartDate || !this.EndDate) {
+        this.startEndDateError = true;
+        error = true;
+      }
+      else {
+        this.startEndDateError = false;
+      }
+
+      if (!error) {
+        this.taskModel = new TaskModel();
+        this.taskModel.Task = this.Task;
+        this.taskModel.ProjectID = this.ProjectID;
+        this.taskModel.ParentTaskID = this.ParentTaskID;
+        this.taskModel.Project = this.Project;
+        this.taskModel.Priority = this.Priority;
+        this.taskModel.StartDate = new Date(this.StartDate);
+        this.taskModel.EndDate = new Date(this.EndDate);
+        this.taskModel.UserID = this.UserID;
+        this.apiService.AddTask(this.taskModel)
+          .subscribe((data: any) => {
+            console.log(data);
+            document.getElementById('userMsg').innerText = "Task deleted successfully...";
+            document.getElementById('userMsg').style.color = "green";
+          },
+            function (error) {
+              console.log(error);
+              document.getElementById('userMsg').innerText = "Error occurred. Please try again...";
+              document.getElementById('userMsg').style.color = "red";
+            });
+      }
     }
   }
 
@@ -174,7 +278,6 @@ export class AddTasksComponent implements OnInit {
     tmpDate.setDate(tmpDate.getDate() + 1);
     this.EndDate = tmpDate.toISOString().split('T')[0];
     this.addButtonText = "Add Task";
-    this.taskHeader = "Add Task";
 
     this.TaskID = undefined;
     this.Task = undefined;
@@ -184,6 +287,13 @@ export class AddTasksComponent implements OnInit {
     this.UserID = undefined;
     this.ParentTask = undefined;
     this.UserName = undefined;
+    this.taskError = false;
+    this.projectError = false;
+    this.startEndDateError = false;
+    this.userError = false;
+
+    document.getElementById('userMsg').innerText = "";
+    document.getElementById('userMsg').style.color = "none";
   }
 
   openProjectDialog() {
