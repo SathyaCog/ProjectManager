@@ -115,10 +115,10 @@ export class ProjectsComponent implements OnInit {
 
       this.apiService.AddProject(this.object)
         .subscribe((data: any) => {
-          document.getElementById('userMsg').innerText = "Project added successfully...";
-          document.getElementById('userMsg').style.color = "green";
           this.ResetData();
           this.GetProjects();
+          document.getElementById('userMsg').innerText = "Project added successfully...";
+          document.getElementById('userMsg').style.color = "green";
         },
           function (error) {
             console.log(error);
@@ -167,10 +167,10 @@ export class ProjectsComponent implements OnInit {
 
       this.apiService.UpdateProject(this.object)
         .subscribe((data: any) => {
-          document.getElementById('userMsg').innerText = "Project updated successfully...";
-          document.getElementById('userMsg').style.color = "green";
           this.ResetData();
           this.GetProjects();
+          document.getElementById('userMsg').innerText = "Project updated successfully...";
+          document.getElementById('userMsg').style.color = "green";
         },
           function (error) {
             console.log(error);
@@ -186,10 +186,10 @@ export class ProjectsComponent implements OnInit {
 
     this.apiService.SuspendProject(projectID)
       .subscribe((data: any) => {
-        document.getElementById('userMsg').innerText = "Project suspended successfully...";
-        document.getElementById('userMsg').style.color = "green";
         this.ResetData();
         this.GetProjects();
+        document.getElementById('userMsg').innerText = "Project suspended successfully...";
+        document.getElementById('userMsg').style.color = "green";
       },
         function (error) {
           console.log(error);

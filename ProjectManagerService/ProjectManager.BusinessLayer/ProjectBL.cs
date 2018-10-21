@@ -42,6 +42,8 @@ namespace ProjectManager.BusinessLayer
                         StartDate = y.Projects.StartDate,
                         EndDate = y.Projects.EndDate,
                         Priority = y.Projects.Priority,
+                        NoofTasks = _projectManager.Tasks.Where(x => x.ProjectID == y.Projects.ProjectID).Count(),
+                        NoofCompletedTasks = _projectManager.Tasks.Where(x => x.ProjectID == y.Projects.ProjectID && x.Status == true).Count(),
                         ManagerID = y.Users != null ? y.Users.UserID : 0,
                         ManagerName = y.Users != null ? y.Users.FirstName + " " + y.Users.LastName : ""
                     }

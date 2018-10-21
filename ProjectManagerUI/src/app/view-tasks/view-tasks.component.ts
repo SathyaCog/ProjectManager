@@ -38,8 +38,14 @@ export class ViewTasksComponent implements OnInit {
   public EndTask(task: TaskModel) {
     this.apiService.EndTask(task).subscribe((data) => {
       this.GetTasks(this.ProjectID);
-      console.log(data);
-    })
+      document.getElementById('userMsg').innerText = "Task ended successfully...";
+      document.getElementById('userMsg').style.color = "green";
+    },
+      function (error) {
+        console.log(error);
+        document.getElementById('userMsg').innerText = "Error occurred. Please try again...";
+        document.getElementById('userMsg').style.color = "red";
+      })
   }
 
   EditTask(task: TaskModel) {

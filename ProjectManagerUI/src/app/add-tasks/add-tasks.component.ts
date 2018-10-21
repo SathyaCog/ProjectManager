@@ -128,7 +128,6 @@ export class AddTasksComponent implements OnInit {
     }
     else {
       this.taskError = false;
-      error = false;
     }
 
     if (!this.ProjectID) {
@@ -137,7 +136,6 @@ export class AddTasksComponent implements OnInit {
     }
     else {
       this.projectError = false;
-      error = false;
     }
 
     if (!this.UserID) {
@@ -146,7 +144,6 @@ export class AddTasksComponent implements OnInit {
     }
     else {
       this.userError = false;
-      error = false;
     }
 
     if (!this.StartDate || !this.EndDate) {
@@ -155,7 +152,6 @@ export class AddTasksComponent implements OnInit {
     }
     else {
       this.startEndDateError = false;
-      error = false;
     }
 
     if (!error) {
@@ -202,7 +198,7 @@ export class AddTasksComponent implements OnInit {
         this.apiService.AddParentTask(this.parentTaskModel)
           .subscribe((data: any) => {
             this.ResetTask();
-            document.getElementById('userMsg').innerText = "Task added successfully...";
+            document.getElementById('userMsg').innerText = "Task updated successfully...";
             document.getElementById('userMsg').style.color = "green";
           },
             function (error) {
@@ -258,8 +254,7 @@ export class AddTasksComponent implements OnInit {
         this.taskModel.UserID = this.UserID;
         this.apiService.AddTask(this.taskModel)
           .subscribe((data: any) => {
-            console.log(data);
-            document.getElementById('userMsg').innerText = "Task deleted successfully...";
+            document.getElementById('userMsg').innerText = "Task added successfully...";
             document.getElementById('userMsg').style.color = "green";
           },
             function (error) {

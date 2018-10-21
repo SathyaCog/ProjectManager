@@ -23,7 +23,6 @@ export class UsersComponent implements OnInit {
   firstNameError: boolean;
   lastNameError: boolean;
   employeeIDError: boolean;
-  userMessage: string;
 
   constructor(private apiService: ApiService) {
     this.firstNameError = false;
@@ -139,10 +138,10 @@ export class UsersComponent implements OnInit {
 
       this.apiService.AddUser(this.object)
         .subscribe((data: any) => {
-          document.getElementById('userMsg').innerText = "User added successfully...";
-          document.getElementById('userMsg').style.color = "green";
           this.ResetData();
           this.GetUsers();
+          document.getElementById('userMsg').innerText = "User added successfully...";
+          document.getElementById('userMsg').style.color = "green";
         },
           function (error) {
             console.log(error);
@@ -183,10 +182,10 @@ export class UsersComponent implements OnInit {
 
       this.apiService.UpdateUser(this.object)
         .subscribe((data: any) => {
-          document.getElementById('userMsg').innerText = "User updated successfully...";
-          document.getElementById('userMsg').style.color = "green";
           this.ResetData();
           this.GetUsers();
+          document.getElementById('userMsg').innerText = "User updated successfully...";
+          document.getElementById('userMsg').style.color = "green";
         },
           function (error) {
             console.log(error);
@@ -208,10 +207,10 @@ export class UsersComponent implements OnInit {
 
     this.apiService.DeleteUser(obj)
       .subscribe((data: any) => {
-        document.getElementById('userMsg').innerText = "User deleted successfully...";
-        document.getElementById('userMsg').style.color = "green";
         this.ResetData();
         this.GetUsers();
+        document.getElementById('userMsg').innerText = "User deleted successfully...";
+        document.getElementById('userMsg').style.color = "green";
       },
         function (error) {
           console.log(error);
@@ -238,7 +237,6 @@ export class UsersComponent implements OnInit {
     this.firstNameError = false;
     this.lastNameError = false;
     this.employeeIDError = false;
-    this.userMessage = undefined;
     this.AddButtonText = "Add User";
     this.ResetButtonText = "Reset";
     document.getElementById('userMsg').innerText = "";

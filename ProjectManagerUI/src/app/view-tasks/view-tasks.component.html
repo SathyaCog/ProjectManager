@@ -1,7 +1,8 @@
 <div class="container">
+  <h6 id="userMsg"></h6>
   <div>
     <label style="display: inline;">Project: </label>
-    <input type="text" [(ngModel)]="Project" style="display: inline; width: 80%;" class="form-control" disabled>
+    <input type="text" placeholder="Please select the project..." [(ngModel)]="Project" style="display: inline; width: 80%;" class="form-control" disabled>
     <button id="openModalButton" class="form-control" style="display: inline;margin-left: 1%; width: 10%;" (click)="openProjectDialog()">Search</button>
   </div>
   <div style="margin-top: 1%;">
