@@ -6,6 +6,7 @@ import { UserModel } from '../models/user-model';
 import { ProjectModel } from '../models/project-model';
 import { TaskModel } from '../models/task-model';
 import { ParentTaskModel } from '../models/task-model';
+import { environment } from '../../environments/environment';
 
 import { map } from 'rxjs/operators';
 import 'rxjs/add/operator/map';
@@ -15,15 +16,15 @@ export class ApiService {
     constructor(private _http: Http) {
 
     }
-    userServiceUrl: string = "http://localhost:50329/api/Users";
-    projectServiceUrl: string = "http://localhost:50329/api/Projects";
-    taskServiceUrl: string = "http://localhost:50329/api/Tasks";
+    userServiceUrl: string = environment.origin + "/api/Users";
+    projectServiceUrl: string = environment.origin + "/api/Projects";
+    taskServiceUrl: string = environment.origin + "/api/Tasks";
 
     GetUsers(): Observable<UserModel[]> {
         let getUrl = this.userServiceUrl + '/GetUsers';
         return this._http.get(getUrl)
             .pipe(map(response => { return response.json() }))
-            .catch(this.handleError)
+            .catch(this.handleError);
     }
 
     AddUser(user) {

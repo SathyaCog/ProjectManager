@@ -5,17 +5,31 @@ using ProjectManagerService.Controllers;
 using System.Collections.ObjectModel;
 using ProjectMangerModel = ProjectManagerService.Models;
 
-namespace ProjectManagerService.Tests
+namespace ProjectManagerService.Tests.UnitTest
 {
     [TestFixture]
     public class UsersControllersTest
     {
+        private IUserBL userBL;
+        private UsersController userController;
+
+        [SetUp]
+        public void TestSetUp()
+        {
+            userBL = new MockUserBL();
+            userController = new UsersController(userBL);
+        }
+
+        [TearDown]
+        public void TestTearDown()
+        {
+            userBL = null;
+            userController = null;
+        }
+
         [Test]
         public void GetUsersTest()
         {
-            IUserBL userBL = new MockUserData();
-
-            var userController = new UsersController(userBL);
             var response = userController.GetUsers();
             var responseResult = response as OkNegotiatedContentResult<Collection<ProjectMangerModel.Users>>;
             Assert.IsNotNull(responseResult);
@@ -32,11 +46,7 @@ namespace ProjectManagerService.Tests
         [Test]
         public void AddUserTest_Success()
         {
-            IUserBL userBL = new MockUserData();
-
             // Arrange
-            var userController = new UsersController(userBL);
-
             ProjectMangerModel.Users model = new ProjectMangerModel.Users
             {
                 UserID = 4,
@@ -55,8 +65,6 @@ namespace ProjectManagerService.Tests
         [Test]
         public void AddUserTest_Error()
         {
-            IUserBL userBL = new MockUserData();
-
             // Arrange
             var userController = new UsersController(null);
 
@@ -78,11 +86,7 @@ namespace ProjectManagerService.Tests
         [Test]
         public void UpdateUserTest_Success()
         {
-            IUserBL userBL = new MockUserData();
-
             // Arrange
-            var userController = new UsersController(userBL);
-
             ProjectMangerModel.Users model = new ProjectMangerModel.Users
             {
                 UserID = 1,
@@ -101,8 +105,6 @@ namespace ProjectManagerService.Tests
         [Test]
         public void UpdateUserTest_Error()
         {
-            IUserBL userBL = new MockUserData();
-
             // Arrange
             var userController = new UsersController(null);
 
@@ -124,11 +126,7 @@ namespace ProjectManagerService.Tests
         [Test]
         public void DeleteUserTest_Success()
         {
-            IUserBL userBL = new MockUserData();
-
             // Arrange
-            var userController = new UsersController(userBL);
-
             ProjectMangerModel.Users model = new ProjectMangerModel.Users
             {
                 UserID = 1,
@@ -138,7 +136,7 @@ namespace ProjectManagerService.Tests
             };
 
             // Act
-            var response = userController.UpdateUser(model);
+            var response = userController.DeleteUser(model);
 
             // Assert
             Assert.IsTrue(response is OkResult);
@@ -147,8 +145,6 @@ namespace ProjectManagerService.Tests
         [Test]
         public void DeleteUserTest_Error()
         {
-            IUserBL userBL = new MockUserData();
-
             // Arrange
             var userController = new UsersController(null);
 
@@ -161,7 +157,7 @@ namespace ProjectManagerService.Tests
             };
 
             // Act
-            var response = userController.UpdateUser(model);
+            var response = userController.DeleteUser(model);
 
             // Assert
             Assert.IsTrue(response is InternalServerErrorResult);

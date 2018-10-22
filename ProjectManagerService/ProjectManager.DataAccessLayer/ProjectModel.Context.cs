@@ -25,9 +25,9 @@ namespace ProjectManager.DataAccessLayer
             throw new UnintentionalCodeFirstException();
         }
 
-        public virtual DbSet<ParentTasks> ParentTasks { get; set; }
-        public virtual DbSet<Projects> Projects { get; set; }
-        public virtual DbSet<Tasks> Tasks { get; set; }
-        public virtual DbSet<Users> Users { get; set; }
+        public virtual IDbSet<ParentTasks> ParentTasks { get; set; }
+        public virtual IDbSet<Projects> Projects { get; set; }
+        public virtual IDbSet<Tasks> Tasks { get; set; }
+        public virtual IDbSet<Users> Users { get; set; }
     }
 }
