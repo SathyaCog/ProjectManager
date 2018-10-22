@@ -14,6 +14,7 @@ import { BootstrapModalModule } from 'ng2-bootstrap-modal';
 import { UserListModelComponent } from './model-popup/user-list-model/user-list-model.component';
 import { ProjectListModelComponent } from './model-popup/project-list-model/project-list-model.component';
 import { TaskListModelComponent } from './model-popup/task-list-model/task-list-model.component';
+import { DialogService } from "ng2-bootstrap-modal";
 
 @NgModule({
   declarations: [
@@ -30,7 +31,6 @@ import { TaskListModelComponent } from './model-popup/task-list-model/task-list-
     BrowserModule,
     FormsModule,
     HttpModule,
-    BootstrapModalModule,
     RouterModule.forRoot(appRoutes),
     BootstrapModalModule.forRoot({ container: document.body })
   ],
@@ -39,7 +39,7 @@ import { TaskListModelComponent } from './model-popup/task-list-model/task-list-
     ProjectListModelComponent,
     TaskListModelComponent
   ],
-  providers: [ApiService],
+  providers: [ApiService, DialogService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
