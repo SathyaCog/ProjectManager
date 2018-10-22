@@ -51,6 +51,7 @@ namespace ProjectManager.BusinessLayer
 
             return projCollection;
         }
+
         public void AddProject(CommonEntities.Projects project)
         {
             Projects proj = new Projects
